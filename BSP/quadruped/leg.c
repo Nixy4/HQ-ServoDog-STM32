@@ -21,6 +21,9 @@ inline quad_coord leg_coord_offset(leg_index index ,quad_coord c)
       c.X += (CONFIG_LEG_COORD_OFFSET_X_LB+CONFIG_LEG_COORD_OFFSET_X_GLOBAL);
       c.Z += (CONFIG_LEG_COORD_OFFSET_Z_LB+CONFIG_LEG_COORD_OFFSET_Z_GLOBAL);
       break;
+    default:
+      elog_e(TAG, "Invalid leg index");
+      break;
   }
   return c;
 }
@@ -75,6 +78,9 @@ void leg_set_angle(leg_index leg, quad_fp angle_thigh, quad_fp angle_shank, bool
       angle_shank = servo_angle_mirror(angle_shank);
       servo_set_angle(SERVO_LB_T, angle_thigh);
       servo_set_angle(SERVO_LB_S, angle_shank);
+      break;
+    default:
+      elog_e(TAG, "Invalid leg index");
       break;
   }
 }
@@ -134,6 +140,9 @@ void leg_set_coord(leg_index leg, quad_coord coord)
       angle_shank = servo_angle_mirror(angle_shank);
       servo_set_angle(SERVO_LB_T, angle_thigh);
       servo_set_angle(SERVO_LB_S, angle_shank);
+      break;
+    default:
+      elog_e(TAG, "Invalid leg index");
       break;
   }
 }
@@ -196,6 +205,9 @@ bool leg_acb_update(servo_index index, bool kine_update)
       case SERVO_LB_S:
         kine_forward(&_kine[LEG_LB], _kine[LEG_LB].AS1, angle);
         break;
+      default:
+        elog_e(TAG, "Invalid servo index");
+        break;
     }
   }
   //! ACB to Servo
@@ -243,6 +255,9 @@ bool leg_acb_update(servo_index index, bool kine_update)
       angle = servo_angle_limit_shank(angle);
       angle = servo_angle_mirror(angle);
       servo_set_angle(SERVO_LB_S, angle);
+      break;
+    default:
+      elog_e(TAG, "Invalid servo index");
       break;
   }
   return flag;
@@ -380,6 +395,9 @@ bool leg_ccb_update(leg_index index)
       angle_shank = servo_angle_mirror(angle_shank);
       servo_set_angle(SERVO_LB_T, angle_thigh);
       servo_set_angle(SERVO_LB_S, angle_shank);
+      break;
+    default:
+      elog_e(TAG, "Invalid leg index");
       break;
   }
   return flag;

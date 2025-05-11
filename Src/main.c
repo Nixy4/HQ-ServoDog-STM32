@@ -62,7 +62,13 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//!BSP
+#include "elog.h"
+#include "key.h"
 #include "quadruped.h"
+
+#define TAG "main"
 
 /* USER CODE END 0 */
 
@@ -100,12 +106,67 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  quad_init();
+  quad_tort_init(30,30,0.5,cc_stand0,FCB_MODE_TICK,150,1);
+  quad_sip_init(30,0.5,cc_stand0,FCB_MODE_TICK,150,2);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    key_value_t key1 = key_read_blocking();
+    key_value_t key2 = key_read_blocking();
+    switch(key1)
+    {
+      case KEY_UP:
+        switch(key2)
+        {
+          case KEY_UP:
+            elog_i(TAG, "KEY_UP + KEY_UP");
+            quad_tort(10);
+            break;
+          default:
+            break;
+        }
+        break;
+      case KEY_DOWN:
+        break;
+      case KEY_LEFT:
+        break;
+      case KEY_RIGHT:
+        break;
+      case KEY_CENTER:
+        switch(key2)
+        {
+          case KEY_UP:
+            elog_i(TAG, "KEY_CENTER + KEY_UP");
+            quad_fixed_stand0();
+            break;
+          case KEY_DOWN:
+            elog_i(TAG, "KEY_CENTER + KEY_DOWN");
+            quad_fixed_fall0();
+            break;
+          case KEY_LEFT:
+            elog_i(TAG, "KEY_CENTER + KEY_LEFT");
+            quad_sip(10);
+            break;
+          case KEY_RIGHT:
+            elog_i(TAG, "KEY_CENTER + KEY_RIGHT");
+            quad_sip3(10);
+            break;
+          case KEY_CENTER:
+            elog_i(TAG, "KEY_CENTER + KEY_CENTER");
+            quad_sip2(10,40);
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        break;
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
