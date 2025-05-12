@@ -5,5 +5,5 @@
 /cmake
 /CMakeLists.txt
 /CMakePresets.json
-/startup_stm32f407xx.s
-/STM32F407XX_FLASH.ld
+# /startup_stm32f407xx.s
+# /STM32F407XX_FLASH.ld

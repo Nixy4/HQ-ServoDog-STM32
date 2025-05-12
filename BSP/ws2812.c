@@ -5,7 +5,8 @@
 #define CNTX  35			//总时间刻度
 #define CNT1  10      //数值0高电平持续时间
 
-#define lop141() {\
+#define lop141() \
+{\
 	__asm("NOP");\
 	__asm("NOP");\
 	__asm("NOP");\
@@ -16,11 +17,7 @@
 	__asm("NOP");\
 	__asm("NOP");\
 	__asm("NOP");\
-
-
-// 
-// 
-// 
+}\
 
 /**
  * FCLK = 168Mhz
@@ -75,7 +72,7 @@ void ws2812_Write24Bit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,uint32_t data)
 void show_16GRB(uint32_t GRB[5])
 {
 	int i = 0;
-//	taskENTER_CRITICAL();
+ 
 	for(;i < 5;i++)
 		ws2812_Write24Bit(GPIOE, GPIO_PIN_5, GRB[i]);
 //	taskEXIT_CRITICAL();

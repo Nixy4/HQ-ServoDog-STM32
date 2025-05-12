@@ -64,6 +64,7 @@ static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN 0 */
 
 //!BSP
+#include "beep.h"
 #include "elog.h"
 #include "key.h"
 #include "quadruped.h"
@@ -105,7 +106,11 @@ int main(void)
   MX_TIM2_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  beep_init(&htim2,TIM_CHANNEL_4,168000000);
+  beep_play_note(1,3,100);
 
+  elog_init_default();
+  key_init();
   quad_init();
   quad_tort_init(30,30,0.5,cc_stand0,FCB_MODE_TICK,150,1);
   quad_sip_init(30,0.5,cc_stand0,FCB_MODE_TICK,150,2);
@@ -117,7 +122,9 @@ int main(void)
   while (1)
   {
     key_value_t key1 = key_read_blocking();
+    beep_play_note(1,3,100);
     key_value_t key2 = key_read_blocking();
+    beep_play_note(1,3,100);
     switch(key1)
     {
       case KEY_UP:

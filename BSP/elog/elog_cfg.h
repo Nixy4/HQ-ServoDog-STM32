@@ -80,4 +80,17 @@
 /* buffer size for buffered output mode */
 #define ELOG_BUF_OUTPUT_BUF_SIZE                 (ELOG_LINE_BUF_SIZE * 10)
 
+#define elog_init_default() do\
+{\
+  elog_init();\
+  elog_set_fmt(ELOG_LVL_ASSERT,   ELOG_FMT_ALL);\
+  elog_set_fmt(ELOG_LVL_ERROR,    ELOG_FMT_FUNC|ELOG_FMT_LVL|ELOG_FMT_TAG|ELOG_FMT_TIME);\
+  elog_set_fmt(ELOG_LVL_WARN,     ELOG_FMT_FUNC|ELOG_FMT_LVL|ELOG_FMT_TAG|ELOG_FMT_TIME);\
+  elog_set_fmt(ELOG_LVL_INFO,     ELOG_FMT_FUNC|ELOG_FMT_LVL|ELOG_FMT_TAG|ELOG_FMT_TIME);\
+  elog_set_fmt(ELOG_LVL_DEBUG,    ELOG_FMT_FUNC|ELOG_FMT_LVL|ELOG_FMT_TAG|ELOG_FMT_TIME);\
+  elog_set_fmt(ELOG_LVL_VERBOSE,  ELOG_FMT_FUNC|ELOG_FMT_LVL|ELOG_FMT_TAG|ELOG_FMT_TIME);\
+  elog_set_filter_lvl(ELOG_LVL_ASSERT);\
+  elog_start();\
+} while(0)\
+
 #endif /* _ELOG_CFG_H_ */

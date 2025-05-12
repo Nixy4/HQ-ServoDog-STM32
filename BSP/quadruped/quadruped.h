@@ -118,10 +118,20 @@ typedef struct quad_coord_ctrlblock
   #define coord_mapping(c, base) ((quad_coord){-(c).X+(base).X,-(c).Z+(base).Z,})
 #endif
 
+/**
+ * @brief 内部延时函数, 单位ns/us/ms
+ * @note 相比于HAL_Delay, 该函数不使用中断, 不受Systick中断优先级影响
+ * @return void
+ */
 void delay_ns(uint32_t ns);
 void delay_us(uint32_t us);
 void delay_ms(uint32_t ms);
 
+/**
+ * @brief 缓动函数
+ * @note 输入0~1, 输出0~1, 通常返回值被作为系数, 目标值 = 起始值 + (目标值 - 起始值) * 缓动函数返回值
+ * @return quad_fp 0~1
+ */
 quad_fp _easing_calc_Linear(const quad_fp t);       // linear t
 
 quad_fp _easing_calc_InQuad(const quad_fp t);       // quadratic t^2
@@ -165,14 +175,76 @@ quad_fp _easing_calc_OutBounce(const quad_fp t);
 quad_fp _easing_calc_InOutBounce(const quad_fp t);
 
 //! Frame Control Block
+/**
+ * @brief 帧控制块API
+ * @note API用于配置/启动/更新帧控制块, 输出当前帧在整个周期的百分比进度, 传递给缓动函数计算
+ */
+
+/**
+ * @brief 帧控制块初始化函数
+ * @param fcb 帧控制块指针
+ * @param mode 帧控制块模式
+ *       @arg FCB_MODE_NONE: 无帧率控制,全速运行
+ *       @arg FCB_MODE_TICK: 使用系统滴答计时器计算每两帧之间的间隔,使用HAL_GetTick()获取系统滴答值
+ *       @arg FCB_MODE_MS: 使用delay_ms()
+ *       @arg FCB_MODE_US: 使用delay_us()
+ * @param interval 帧间隔,根据模式不同,单位也不同, 分别为Tick数/ms/us
+ * @return void
+ */
 void fcb_init(quad_fcb* fcb, fcb_mode mode, uint32_t interval);
+
+/**
+ * @brief 帧控制块开始函数
+ * @note 启动帧控制块, 设置总帧数
+ * @return void
+ */
 void fcb_start(quad_fcb* frame, uint32_t count);
+
+/**
+ * @brief 帧控制块更新索引到下一帧
+ * @return void
+ */
 void fcb_next(quad_fcb* fcb);
+
+/**
+ * @brief 帧控制块跳帧
+ * @note 模块跟内根据工作模式, 判断当前帧是否需要跳过
+ * @return bool 当前帧是否需要跳过
+ * FCB_MODE_NONE 模式下, 返回值为false
+ * FCB_MODE_TICK 模式下, 根据上一帧更新时的最后Tick值判断本次是否需要跳过(由于时间间隔过短), 间隔小于interval返回true, 否则返回false
+ * FCB_MODE_MS   模式下, 使用delay_ms()函数延时, 随后返回值false
+ * FCB_MODE_US   模式下, 使用delay_us()函数延时, 随后返回值false
+ */
 bool fcb_skip(quad_fcb* fcb);
+
+/**
+ * @brief 帧控制块一个周期是否完成
+ * @return bool true:完成 false:未完成
+ */
 bool fcb_complete(quad_fcb* frame);
+
+/**
+ * @brief 帧控制块是否在中间帧
+ * @return bool true:在中间 false:不在中间
+ */
 bool fcb_median(quad_fcb* fcb);
+
+/**
+ * @brief 帧控制块是否在最后一帧
+ * @return bool true:在最后一帧 false:不在最后一帧
+ */
 bool fcb_last(quad_fcb* frame);
+
+/**
+ * @brief 帧控制块当前帧在整个周期的百分比进度
+ * @return quad_fp 0~1
+ */
 quad_fp fcb_percentage(quad_fcb* fcb);
+
+/**
+ * @brief 返回当前帧索引值
+ * @return uint32_t 当前帧索引值  
+ */
 uint32_t fcb_current(quad_fcb* fcb);
 uint32_t fcb_count(quad_fcb* fcb);
 

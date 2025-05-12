@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stm32_hal_hw_pwm_beep.h": "c",
+			"beep.h": "c"
+		}
+	}
+}
