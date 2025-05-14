@@ -1,5 +1,7 @@
 #pragma once
 
+#define CONFIG_STM32_CCMRAM_ENBALE 0
+
 //!浮点类型和计算类型
 #define CONFIG_FLOAT_TYPE 0
 #define CONFIG_CONST_TYPE 0
@@ -34,7 +36,7 @@
 
 //!舵机参数
 //舵机PWM频率
-#define CONFIG_SERVO_PWM_FREQ        50U   //50Hz
+#define CONFIG_SERVO_PWM_FREQ        50.f   //50Hz
 //舵机角度极限
 #define CONFIG_SERVO_LIMIT_MIN_T     0.f
 #define CONFIG_SERVO_LIMIT_MAX_T     120.f

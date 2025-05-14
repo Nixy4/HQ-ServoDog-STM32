@@ -17,4 +17,10 @@ const quad_fp R15 = CONFIG_R15;
 const quad_fp L8  = CONFIG_L8;
 const quad_fp L9  = CONFIG_L9;
 
+//!常用坐标
+const quad_coord cc_stand0    = {0.f,115.0f};
+const quad_coord cc_stand1    = {0.f,110.0f};
+const quad_coord cc_start     = {21.330410f,36.030797f};
+const quad_coord cc_end       = {21.330410f,36.030797f};
+
 #endif

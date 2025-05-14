@@ -104,57 +104,6 @@ static inline void pca9685_set_psc(uint8_t psc)
 // }
 
 //! Servo
-void servo_set_freq(quad_fp freq)
-{
-  freq *= 0.98f;
-  uint8_t psc = ( (uint8_t)( (quad_fp)(ICLK) / ( (quad_fp)CNT_MAX * freq ) ) ) - 1 ;
-  pca9685_set_psc(psc);
-}
-
-void servo_set_angle(servo_index index, quad_fp angle)
-{
-  if (index > SERVO_END) {
-    elog_e(TAG,"index %1u:%10.f°", index, angle);
-    return;
-  }else{
-    elog_v(TAG,"index %1u:%10.f°", index, angle);
-  }
-
-  uint16_t off = (uint16_t)(angle * 2.276f + 0.5f) + 102;
-  uint8_t buf[5] = {REG_LEDX_BASE((uint8_t)index), ONL(0), ONH(0), OFFL(off), OFFH(off)};
-  HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(
-    &hi2c2, CONFIG_PCA9685_I2C_ADDR, buf, sizeof(buf), CONFIG_PCA9685_I2C_TIMEOUT);
-
-  if (status != HAL_OK) {
-    elog_e(TAG, "hal i2c transmit error");
-  }
-}
-
-void servo_set_angle_sync(quad_fp angles[SERVO_COUNT])
-{
-  elog_v(TAG,"|0:%10.f|1:%10.f|2:%10.f|3:%10.f|4:%10.f|5:%10.f|6:%10.f|7:%10.f|", 
-    angles[0], angles[1], angles[2], angles[3], angles[4], angles[5], angles[6], angles[7]);
-
-  uint16_t off[8] = {0};
-  uint8_t buf[8*4+1] = {REG_LED_BASE};
-
-  for (uint32_t i = 0; i < 8; i++) {
-    off[i] = (uint32_t)(angles[i] * 2.276f + 0.5f) + 102;
-  }
-  
-  for (uint32_t i = 0; i < SERVO_COUNT; i++) {
-    buf[i*4+1] = ONL(0);
-    buf[i*4+2] = ONH(0);
-    buf[i*4+3] = OFFL(off[i]);
-    buf[i*4+4] = OFFH(off[i]);
-  }
-
-  HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(
-    &hi2c2, CONFIG_PCA9685_I2C_ADDR, buf, sizeof(buf), CONFIG_PCA9685_I2C_TIMEOUT);
-  if (status != HAL_OK) {
-    elog_e(TAG, "hal i2c transmit error");
-  }
-}
 
 inline quad_fp servo_angle_mirror(quad_fp angle)
 {
@@ -185,3 +134,54 @@ inline quad_fp servo_angle_limit_shank(quad_fp angle)
   }
   return angle;
 }
+
+void servo_set_freq(quad_fp freq)
+{
+  freq *= 0.98f;
+  uint8_t psc = ( (uint8_t)( (quad_fp)(ICLK) / ( (quad_fp)CNT_MAX * freq ) ) ) - 1 ;
+  pca9685_set_psc(psc);
+}
+
+void servo_set_angle(servo_index index, quad_fp angle)
+{
+  if (index > SERVO_END) {
+    elog_e(TAG,"index %1u:%10.f°", index, angle);
+    return;
+  }else{
+    elog_v(TAG,"index %1u:%10.f°", index, angle);
+  }
+
+  uint16_t off = (uint16_t)(angle * 2.276f + 0.5f) + 102;
+  uint8_t buf[5] = {REG_LEDX_BASE((uint8_t)index), ONL(0), ONH(0), OFFL(off), OFFH(off)};
+  HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(
+    &hi2c2, CONFIG_PCA9685_I2C_ADDR, buf, sizeof(buf), CONFIG_PCA9685_I2C_TIMEOUT);
+
+  if (status != HAL_OK) {
+    elog_e(TAG, "hal i2c transmit error");
+  }
+}
+
+void servo_set_angle_sync(quad_fp angles[SERVO_COUNT])
+{
+  uint16_t off[8] = {0};
+  uint8_t buf[8*4+1] = {REG_LED_BASE};
+
+  for (uint32_t i = 0; i < 8; i++) {
+    off[i] = (uint32_t)(angles[i] * 2.276f + 0.5f) + 102;
+  }
+  
+  for (uint32_t i = 0; i < SERVO_COUNT; i++) {
+    buf[i*4+1] = ONL(0);
+    buf[i*4+2] = ONH(0);
+    buf[i*4+3] = OFFL(off[i]);
+    buf[i*4+4] = OFFH(off[i]);
+  }
+
+  HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(
+    &hi2c2, CONFIG_PCA9685_I2C_ADDR, buf, sizeof(buf), CONFIG_PCA9685_I2C_TIMEOUT);
+  if (status != HAL_OK) {
+    elog_e(TAG, "hal i2c transmit error");
+  }
+}
+
+

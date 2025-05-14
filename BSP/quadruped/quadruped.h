@@ -12,6 +12,16 @@
 #include "string.h"
 #include "math.h"
 
+#if CONFIG_STM32_CCMRAM_ENBALE
+#define QUAD_FAST_MEM_DATA __attribute__((section(".ccmram")))
+#define QUAD_FAST_MEM_BSS  __attribute__((section(".ccmram")))
+#define QUAD_FAST_MEM_TEXT __attribute__((section(".ccmram")))
+#else
+#define QUAD_FAST_MEM_DATA
+#define QUAD_FAST_MEM_BSS
+#define QUAD_FAST_MEM_TEXT
+#endif
+
 #if CONFIG_FLOAT_TYPE == 0
   typedef float quad_fp;
 #else

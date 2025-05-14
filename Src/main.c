@@ -71,6 +71,48 @@ static void MX_USART3_UART_Init(void);
 
 #define TAG "main"
 
+static quad_fp _swr;
+static quad_fp _shr;
+static quad_fp _swl;
+static quad_fp _shl;
+
+static uint32_t _ferame_count;
+static quad_fp _cuf_off_percentage;
+static uint32_t _cuf_off_index;
+
+static quad_coord _base;
+static quad_fcb _fcb;
+
+void quad_turn_init(
+  quad_fp swing_width_right , quad_fp swing_height, 
+  quad_fp swing_width_left, quad_fp swing_height_left, 
+  quad_fp cuf_off_percentage, quad_coord base, 
+  fcb_mode mode, uint32_t frame_count, uint32_t frame_interval)
+{
+  _swr                = swing_width_right;
+  _shr                = swing_height;
+  _swl                = swing_width_left;
+  _shl                = swing_height_left;
+  _cuf_off_percentage = cuf_off_percentage;
+  _cuf_off_index      = (uint32_t)(_ferame_count*_cuf_off_percentage+0.5f);
+  _cuf_off_index      = (_cuf_off_index > _ferame_count) ? _ferame_count : _cuf_off_index;
+  _base.X             = base.X + swing_width_right / 2.f;
+  _base.Z             = base.Z;
+  _ferame_count       = frame_count;
+
+  fcb_init(&_fcb, mode, frame_interval);
+}
+
+void quad_turn_left(uint32_t steps)
+{
+  
+}
+
+void quad_turn(uint32_t dir,  uint32_t steps)
+{
+
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -106,14 +148,30 @@ int main(void)
   MX_TIM2_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  elog_init_default(); 
+  // elog_set_filter_lvl(ELOG_LVL_VERBOSE);
+
+  elog_i(TAG, "elog u : %u", 123);
+  elog_i(TAG, "elog d : %d", 123);
+  elog_i(TAG, "elog x : %x", 0x123);
+  elog_i(TAG, "elog f : %f", 123.456);
+  elog_i(TAG, "elog s : %s", "hello world");
+
+
   beep_init(&htim2,TIM_CHANNEL_4,168000000);
   beep_play_note(1,3,100);
+  elog_i(TAG, "beep init success");
 
-  elog_init_default();
   key_init();
+  elog_i(TAG, "key init success");
+
   quad_init();
+  elog_i(TAG, "quad init success");
   quad_tort_init(30,30,0.5,cc_stand0,FCB_MODE_TICK,150,1);
+  elog_i(TAG, "quad_tort_init success");
   quad_sip_init(30,0.5,cc_stand0,FCB_MODE_TICK,150,2);
+  elog_i(TAG, "quad_sip_init success");
+
 
   /* USER CODE END 2 */
 
