@@ -113,6 +113,63 @@ void quad_turn(uint32_t dir,  uint32_t steps)
 
 }
 
+void quad_key_handler2()
+{
+  key_value_t key1 = key_read_blocking();
+  beep_play_note(1,3,100);
+  key_value_t key2 = key_read_blocking();
+  beep_play_note(1,3,100);
+  switch(key1)
+  {
+    case KEY_UP:
+      switch(key2)
+      {
+        case KEY_UP:
+          elog_i(TAG, "KEY_UP + KEY_UP");
+          quad_tort(10);
+          break;
+        default:
+          break;
+      }
+      break;
+    case KEY_DOWN:
+      break;
+    case KEY_LEFT:
+      break;
+    case KEY_RIGHT:
+      break;
+    case KEY_CENTER:
+      switch(key2)
+      {
+        case KEY_UP:
+          elog_i(TAG, "KEY_CENTER + KEY_UP");
+          quad_fixed_stand0();
+          break;
+        case KEY_DOWN:
+          elog_i(TAG, "KEY_CENTER + KEY_DOWN");
+          quad_fixed_fall0();
+          break;
+        case KEY_LEFT:
+          elog_i(TAG, "KEY_CENTER + KEY_LEFT");
+          quad_sip(10);
+          break;
+        case KEY_RIGHT:
+          elog_i(TAG, "KEY_CENTER + KEY_RIGHT");
+          quad_sip3(10);
+          break;
+        case KEY_CENTER:
+          elog_i(TAG, "KEY_CENTER + KEY_CENTER");
+          quad_sip2(10,40);
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -149,14 +206,8 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   elog_init_default(); 
+  elog_set_filter_lvl(ELOG_LVL_INFO);
   // elog_set_filter_lvl(ELOG_LVL_VERBOSE);
-
-  elog_i(TAG, "elog u : %u", 123);
-  elog_i(TAG, "elog d : %d", 123);
-  elog_i(TAG, "elog x : %x", 0x123);
-  elog_i(TAG, "elog f : %f", 123.456);
-  elog_i(TAG, "elog s : %s", "hello world");
-
 
   beep_init(&htim2,TIM_CHANNEL_4,168000000);
   beep_play_note(1,3,100);
@@ -167,11 +218,21 @@ int main(void)
 
   quad_init();
   elog_i(TAG, "quad init success");
+
   quad_tort_init(30,30,0.5,cc_stand0,FCB_MODE_TICK,150,1);
   elog_i(TAG, "quad_tort_init success");
+  
   quad_sip_init(30,0.5,cc_stand0,FCB_MODE_TICK,150,2);
   elog_i(TAG, "quad_sip_init success");
 
+  // quad_fp angles0[8] = {0,0,0,0,0,0,0,0};
+  // leg_sync_set_angle2(angles0, true);
+  // HAL_Delay(1000);
+  // quad_fp angles90[8] = {90,90,90,90,90,90,90,90};
+  // leg_sync_set_angle2(angles90, true);
+  // HAL_Delay(1000);
+  // quad_fp angles180[8] = {180,180,180,180,180,180,180,180};
+  // leg_sync_set_angle2(angles180, true);
 
   /* USER CODE END 2 */
 
@@ -179,59 +240,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    key_value_t key1 = key_read_blocking();
-    beep_play_note(1,3,100);
-    key_value_t key2 = key_read_blocking();
-    beep_play_note(1,3,100);
-    switch(key1)
-    {
-      case KEY_UP:
-        switch(key2)
-        {
-          case KEY_UP:
-            elog_i(TAG, "KEY_UP + KEY_UP");
-            quad_tort(10);
-            break;
-          default:
-            break;
-        }
-        break;
-      case KEY_DOWN:
-        break;
-      case KEY_LEFT:
-        break;
-      case KEY_RIGHT:
-        break;
-      case KEY_CENTER:
-        switch(key2)
-        {
-          case KEY_UP:
-            elog_i(TAG, "KEY_CENTER + KEY_UP");
-            quad_fixed_stand0();
-            break;
-          case KEY_DOWN:
-            elog_i(TAG, "KEY_CENTER + KEY_DOWN");
-            quad_fixed_fall0();
-            break;
-          case KEY_LEFT:
-            elog_i(TAG, "KEY_CENTER + KEY_LEFT");
-            quad_sip(10);
-            break;
-          case KEY_RIGHT:
-            elog_i(TAG, "KEY_CENTER + KEY_RIGHT");
-            quad_sip3(10);
-            break;
-          case KEY_CENTER:
-            elog_i(TAG, "KEY_CENTER + KEY_CENTER");
-            quad_sip2(10,40);
-            break;
-          default:
-            break;
-        }
-        break;
-      default:
-        break;
-    }
+    quad_key_handler2();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

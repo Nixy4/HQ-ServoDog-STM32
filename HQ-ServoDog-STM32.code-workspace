@@ -9,7 +9,8 @@
 			"stm32_hal_hw_pwm_beep.h": "c",
 			"beep.h": "c",
 			"string.h": "c",
-			"key.h": "c"
+			"key.h": "c",
+			"elog_user_func.h": "c"
 		}
 	}
 }

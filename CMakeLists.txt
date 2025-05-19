@@ -23,6 +23,8 @@ set(CMAKE_PROJECT_NAME HQ-ServoDog-STM32)
 
 # Include toolchain file
 include("cmake/gcc-arm-none-eabi.cmake")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -u _printf_float")
 
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
@@ -46,13 +48,24 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add sources to executable
+file(GLOB_RECURSE BSP_SOURCES
+    BSP/*.c
+    BSP/*.cpp
+    BSP/*.h
+    BSP/*.hpp
+)
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    ${BSP_SOURCES}
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    BSP
+    BSP/cjson
+    BSP/elog
+    BSP/quadruped
 )
 
 # Add project symbols (macros)
@@ -65,4 +78,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
+)
+
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.hex
+    COMMENT "Generating HEX file"
 )

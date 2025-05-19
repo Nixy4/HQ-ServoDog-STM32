@@ -1,0 +1,43 @@
+{
+  "servo offset" : 
+  {
+    "RF_T"    : 5,
+    "RF_S"    : 15,
+    "LF_T"    : 10,
+    "LF_S"    : 10,
+    "RB_T"    : 5,
+    "RB_S"    : 10,
+    "LB_T"    : 5,
+    "LB_S"    : 0,
+    "GLOBAL_T": 0,
+    "GLOBAL_S": 0
+  },
+
+  "coord offset" : 
+  {
+    "RF_X" : 4,
+    "RF_Z" : 0,
+    "LF_X" : 4,
+    "LF_Z" : 0,
+    "RB_X" : 0,
+    "RB_Z" : 0,
+    "LB_X" : 0,
+    "LB_Z" : 0   
+  },
+
+  "leg set angle" : 
+  {
+    "index" : 0,
+    "angle" : 90
+  },
+
+  "leg set coord" : [20,20],
+
+  "action" : 
+  {
+    "type" : "stand",
+    "param" : 0
+  },
+
+  "AP Name" : "HQ-ServoDog-Nix"
+}

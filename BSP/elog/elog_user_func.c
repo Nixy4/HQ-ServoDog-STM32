@@ -1,0 +1,1 @@
+#include "elog_user_func.h"
